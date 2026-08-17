@@ -1,0 +1,10 @@
+{
+  "name": "Remix طريق الهدى - المنصة القرآنية والإسلامية الشاملة",
+  "description": "منصة طريق الهدى الإسلامية الشاملة: تلاوة وقراءة المصحف الشريف بالرسم العثماني، خطة الورد اليومي والختمة، كبار القراء، التفسير، الأذكار، والأدعية ومواقيت الصلاة.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

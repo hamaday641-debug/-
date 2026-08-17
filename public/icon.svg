@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient: Deep Islamic Green to Onyx Night -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1B3022"/>
+      <stop offset="50%" stop-color="#0F1D14"/>
+      <stop offset="100%" stop-color="#070D09"/>
+    </linearGradient>
+
+    <!-- Luxury Gold Foil Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3C4"/>
+      <stop offset="30%" stop-color="#FCD34D"/>
+      <stop offset="70%" stop-color="#E9B161"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+
+    <!-- Soft Gold Gradient for Door & Highlights -->
+    <linearGradient id="goldDoor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="60%" stop-color="#E9B161"/>
+      <stop offset="100%" stop-color="#92400E"/>
+    </linearGradient>
+
+    <!-- Kaaba Front Wall (Deep Velvet Black) -->
+    <linearGradient id="kaabaFront" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1E232A"/>
+      <stop offset="50%" stop-color="#15191E"/>
+      <stop offset="100%" stop-color="#0B0D10"/>
+    </linearGradient>
+
+    <!-- Kaaba Side Wall (Shadow Velvet) -->
+    <linearGradient id="kaabaSide" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0B0D10"/>
+      <stop offset="100%" stop-color="#050608"/>
+    </linearGradient>
+
+    <!-- Kaaba Top Roof -->
+    <linearGradient id="kaabaRoof" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2D3748"/>
+      <stop offset="100%" stop-color="#1A202C"/>
+    </linearGradient>
+
+    <!-- Marble Base Shadirwan -->
+    <linearGradient id="marbleBase" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F3F4F6"/>
+      <stop offset="50%" stop-color="#E5E7EB"/>
+      <stop offset="100%" stop-color="#9CA3AF"/>
+    </linearGradient>
+
+    <!-- Glowing Halo -->
+    <radialGradient id="halo" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#E9B161" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#E9B161" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#E9B161" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- App Rounded Container Box -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  
+  <!-- Outer Ornate Islamic Geometric Ring -->
+  <circle cx="256" cy="256" r="224" fill="none" stroke="url(#goldGrad)" stroke-width="3" opacity="0.3" stroke-dasharray="16 8"/>
+  <circle cx="256" cy="256" r="212" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Divine Glow behind Kaaba -->
+  <circle cx="256" cy="260" r="180" fill="url(#halo)"/>
+
+  <!-- Decorative Stars in Sky -->
+  <circle cx="120" cy="110" r="3" fill="#FFF3C4" opacity="0.8"/>
+  <circle cx="390" cy="120" r="3" fill="#FFF3C4" opacity="0.8"/>
+  <circle cx="256" cy="70" r="4" fill="#FCD34D" opacity="0.9"/>
+  <polygon points="256,58 260,68 270,70 260,74 256,84 252,74 242,70 252,68" fill="url(#goldGrad)" opacity="0.9"/>
+
+  <!-- Crescent Moon in Top Center -->
+  <path d="M 235 90 A 24 24 0 0 0 277 114 A 20 20 0 0 1 245 92 A 20 20 0 0 1 251 84 A 24 24 0 0 0 235 90 Z" fill="url(#goldGrad)" opacity="0.95"/>
+
+  <!-- ==================== THE HOLY KAABA (الكعبة المشرفة) ==================== -->
+  
+  <!-- Marble Base (الشاذروان) -->
+  <!-- Base Side -->
+  <polygon points="256,412 110,366 110,380 256,428" fill="#9CA3AF" opacity="0.9"/>
+  <!-- Base Front -->
+  <polygon points="256,412 402,366 402,380 256,428" fill="#E5E7EB"/>
+
+  <!-- 1. Kaaba Left/Front Side Wall -->
+  <polygon points="256,190 118,236 118,370 256,418" fill="url(#kaabaSide)"/>
+  
+  <!-- 2. Kaaba Right/Front Main Wall (With Door) -->
+  <polygon points="256,190 394,236 394,370 256,418" fill="url(#kaabaFront)"/>
+
+  <!-- 3. Kaaba Roof (السطح) -->
+  <polygon points="256,190 118,236 256,282 394,236" fill="url(#kaabaRoof)"/>
+  <!-- Roof Inner Rim -->
+  <polygon points="256,196 126,238 256,278 386,238" fill="#111827"/>
+
+  <!-- 4. Kiswah Golden Belt (حزام الكعبة المشرفة الذهبي) -->
+  <!-- Left Side Band -->
+  <polygon points="256,242 118,288 118,310 256,264" fill="url(#goldGrad)"/>
+  <!-- Left Side Band Lower Line -->
+  <polygon points="256,270 118,316 118,320 256,274" fill="url(#goldGrad)" opacity="0.6"/>
+
+  <!-- Right Side Main Band -->
+  <polygon points="256,242 394,288 394,310 256,264" fill="url(#goldGrad)"/>
+  <!-- Right Side Band Lower Line -->
+  <polygon points="256,270 394,316 394,320 256,274" fill="url(#goldGrad)" opacity="0.6"/>
+
+  <!-- Belt Calligraphy Text Texture Embellishments (نقوش الحزام) -->
+  <line x1="262" y1="245" x2="388" y2="287" stroke="#78350F" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="262" y1="251" x2="388" y2="293" stroke="#FFF3C4" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <line x1="262" y1="257" x2="388" y2="299" stroke="#78350F" stroke-width="1.5" stroke-dasharray="5 3"/>
+
+  <line x1="250" y1="245" x2="124" y2="287" stroke="#78350F" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="250" y1="251" x2="124" y2="293" stroke="#FFF3C4" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <line x1="250" y1="257" x2="124" y2="299" stroke="#78350F" stroke-width="1.5" stroke-dasharray="5 3"/>
+
+  <!-- 5. Golden Kaaba Door (باب الكعبة المشرفة) -->
+  <!-- Door Outer Frame -->
+  <polygon points="296,286 352,304 352,382 296,364" fill="url(#goldDoor)"/>
+  <!-- Door Inner Recess -->
+  <polygon points="300,292 348,308 348,378 300,362" fill="#78350F"/>
+  <!-- Door Gold Panels -->
+  <polygon points="303,296 345,310 345,332 303,318" fill="url(#goldGrad)"/>
+  <polygon points="303,324 345,338 345,372 303,358" fill="url(#goldGrad)"/>
+  <!-- Door Arch/Lock Ornament -->
+  <circle cx="324" cy="336" r="3.5" fill="#FFF3C4"/>
+  <polygon points="323,338 325,338 326,346 322,346" fill="#FFF3C4"/>
+
+  <!-- 6. Kiswah Lower Curtain Panels (ستائر الكسوة) -->
+  <!-- Front curtain segments -->
+  <line x1="300" y1="316" x2="300" y2="398" stroke="#1E232A" stroke-width="1.5" opacity="0.6"/>
+  <line x1="360" y1="336" x2="360" y2="378" stroke="#1E232A" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- 7. The Black Stone (الحجر الأسود) Silver Highlight at Corner -->
+  <ellipse cx="256" cy="414" rx="6" ry="10" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="2"/>
+  <circle cx="256" cy="414" r="3.5" fill="#000000"/>
+  <circle cx="255" cy="412" r="1" fill="#FFFFFF" opacity="0.8"/>
+
+  <!-- 8. Golden Water Spout (ميزاب الرحمة) on Top -->
+  <polygon points="200,208 190,205 186,211 198,214" fill="url(#goldGrad)"/>
+
+  <!-- 9. Ornate Baseline Label: "طريق الهدى" in Golden Kufic/Thuluth Flow -->
+  <g transform="translate(0, 436)">
+    <!-- Subtle Golden Islamic Ornament separator -->
+    <path d="M 216 12 Q 256 0 296 12 Q 256 6 216 12 Z" fill="url(#goldGrad)" opacity="0.8"/>
+    <circle cx="256" cy="6" r="3" fill="#FFF3C4"/>
+    <circle cx="206" cy="12" r="2" fill="#E9B161" opacity="0.7"/>
+    <circle cx="306" cy="12" r="2" fill="#E9B161" opacity="0.7"/>
+  </g>
+</svg>
