@@ -17,7 +17,9 @@ import {
   Layers,
   X,
   FastForward,
-  Rewind
+  Rewind,
+  Download,
+  HardDrive
 } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
 import { SURAHS_LIST } from '../data/surahs';
@@ -57,8 +59,13 @@ export const AudioPlayerBar: React.FC<AudioPlayerBarProps> = ({ onOpenQuranAt })
     setPlaybackRate,
     setVolume,
     toggleMute,
-    setIsFullPlayerOpen
+    setIsFullPlayerOpen,
+    setIsOfflineModalOpen,
+    playbackMode,
+    setPlaybackMode,
+    playFullSurahStream
   } = useAudio();
+
 
   const [showRangeModal, setShowRangeModal] = useState(false);
   const [rangeFrom, setRangeFrom] = useState(1);
@@ -108,10 +115,13 @@ export const AudioPlayerBar: React.FC<AudioPlayerBarProps> = ({ onOpenQuranAt })
 
   return (
     <>
-      {/* 1. Floating Mini Bar (Visible on bottom above tabs) */}
+      {/* 1. Floating Mini Bar (Visible on bottom above the home nav button) */}
       <div 
         id="mini-audio-player-bar"
-        className="fixed bottom-16 md:bottom-3 left-2 right-2 md:left-6 md:right-6 max-w-4xl md:mx-auto z-30 bg-[#1B3022]/95 border border-[#2D4536] shadow-2xl rounded-2xl backdrop-blur-xl text-white px-3 py-2.5 transition-all duration-300"
+        className="fixed left-2 right-2 md:left-6 md:right-6 max-w-4xl md:mx-auto z-30 bg-[#1B3022]/95 border border-[#2D4536] shadow-2xl rounded-2xl backdrop-blur-xl text-white px-3 py-2.5 transition-all duration-300 touch-manipulation"
+        style={{
+          bottom: 'max(calc(4.75rem + env(safe-area-inset-bottom, 0px)), 5rem)'
+        }}
       >
         <div className="flex items-center justify-between gap-2 sm:gap-4">
           {/* Info & Reciter */}
@@ -236,7 +246,15 @@ export const AudioPlayerBar: React.FC<AudioPlayerBarProps> = ({ onOpenQuranAt })
 
       {/* 2. Full Screen Audio Player Modal */}
       {isFullPlayerOpen && (
-        <div className="fixed inset-0 z-50 bg-[#0F1D13]/95 backdrop-blur-xl flex flex-col justify-between text-[#E0E7E1] p-4 sm:p-6 md:p-8 animate-fadeIn">
+        <div 
+          className="fixed inset-0 z-50 bg-[#0F1D13]/95 backdrop-blur-xl flex flex-col justify-between text-[#E0E7E1] p-4 sm:p-6 md:p-8 animate-fadeIn"
+          style={{
+            paddingTop: 'max(calc(env(safe-area-inset-top, 0px) + 1rem), 1rem)',
+            paddingBottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 1rem), 1rem)',
+            paddingLeft: 'max(calc(env(safe-area-inset-left, 0px) + 1rem), 1rem)',
+            paddingRight: 'max(calc(env(safe-area-inset-right, 0px) + 1rem), 1rem)',
+          }}
+        >
           {/* Top Bar */}
           <div className="max-w-2xl mx-auto w-full flex items-center justify-between">
             <button
@@ -252,14 +270,26 @@ export const AudioPlayerBar: React.FC<AudioPlayerBarProps> = ({ onOpenQuranAt })
               <h3 className="text-sm font-bold text-white">سورة {currentSurahName}</h3>
             </div>
 
-            <button
-              onClick={() => setShowReciterDrawer(true)}
-              id="full-player-reciter-menu-btn"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1B3022] border border-[#2D4536] text-xs text-[#E9B161] hover:bg-[#2D4536]"
-            >
-              <User className="w-3.5 h-3.5" />
-              <span>تغيير القارئ</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsOfflineModalOpen(true)}
+                id="full-player-download-btn"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1B3022] border border-[#2D4536] text-xs text-[#E9B161] hover:bg-[#2D4536]"
+                title="تحميل السورة للعمل بدون إنترنت"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">تحميل بدون نت</span>
+              </button>
+
+              <button
+                onClick={() => setShowReciterDrawer(true)}
+                id="full-player-reciter-menu-btn"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1B3022] border border-[#2D4536] text-xs text-white hover:bg-[#2D4536]"
+              >
+                <User className="w-3.5 h-3.5 text-[#E9B161]" />
+                <span>القارئ</span>
+              </button>
+            </div>
           </div>
 
           {/* Center Visual Art & Reciter Info */}
@@ -303,6 +333,32 @@ export const AudioPlayerBar: React.FC<AudioPlayerBarProps> = ({ onOpenQuranAt })
                 </button>
               </div>
             )}
+
+            {/* Playback Mode Indicator / Switcher */}
+            <div className="flex items-center gap-2 mt-2">
+              <button
+                onClick={() => {
+                  if (playbackMode === 'verse_by_verse' && activeSurah) {
+                    playFullSurahStream(activeSurah);
+                  } else if (activeSurah) {
+                    playAyah(activeSurah, activeAyahNumber || 1);
+                  }
+                }}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                  playbackMode === 'continuous_surah'
+                    ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300 hover:bg-emerald-900/60'
+                    : 'bg-[#E9B161]/15 border-[#E9B161]/40 text-[#E9B161] hover:bg-[#E9B161]/25'
+                }`}
+                title="التبديل بين التلاوة المتصلة الكاملة أو تلاوة آية بآية بدون فواصل"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>
+                  {playbackMode === 'continuous_surah'
+                    ? 'تلاوة متصلة كاملة (استوديو بدون أي تقطيع)'
+                    : 'تلاوة آية بآية متصلة وفورية (0 ثانية فاصل)'}
+                </span>
+              </button>
+            </div>
 
             {/* Go to Surah in Quran reader */}
             {activeSurah && onOpenQuranAt && (
@@ -555,9 +611,6 @@ export const AudioPlayerBar: React.FC<AudioPlayerBarProps> = ({ onOpenQuranAt })
                     onClick={() => {
                       setReciter(reciter);
                       setShowReciterDrawer(false);
-                      if (activeSurah && activeAyahNumber) {
-                        playAyah(activeSurah, activeAyahNumber, reciter);
-                      }
                     }}
                     className={`w-full p-3 rounded-xl border text-right transition-all flex items-center justify-between ${
                       isSelected

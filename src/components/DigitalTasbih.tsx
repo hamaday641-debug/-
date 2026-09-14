@@ -12,6 +12,7 @@ import {
   Heart
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { trackEvent } from '../services/analytics';
 
 interface TasbihPreset {
   id: string;
@@ -52,6 +53,7 @@ export const DigitalTasbih: React.FC = () => {
     const nextTotal = totalCount + 1;
     setCount(next);
     setTotalCount(nextTotal);
+    trackEvent('tasbih', selectedPreset.arabic, 1);
 
     try {
       localStorage.setItem('nour_tasbih_total', String(nextTotal));

@@ -53,7 +53,14 @@ export const BookmarksDrawer: React.FC<BookmarksDrawerProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex justify-start animate-fadeIn">
-      <div className="w-full max-w-md bg-[#FDFCFB] dark:bg-[#1B3022] border-l border-[#2D4536]/20 dark:border-[#2D4536] h-full p-5 flex flex-col text-[#2C3E30] dark:text-[#E0E7E1] shadow-2xl animate-slideRight">
+      <div 
+        className="w-full max-w-md bg-[#FDFCFB] dark:bg-[#1B3022] border-l border-[#2D4536]/20 dark:border-[#2D4536] h-full p-5 flex flex-col text-[#2C3E30] dark:text-[#E0E7E1] shadow-2xl animate-slideRight"
+        style={{
+          paddingTop: 'max(calc(env(safe-area-inset-top, 0px) + 1.25rem), 1.25rem)',
+          paddingBottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 1.25rem), 1.25rem)',
+          paddingRight: 'max(calc(env(safe-area-inset-right, 0px) + 1.25rem), 1.25rem)',
+        }}
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[#2D4536]/15 dark:border-[#2D4536]">
           <div className="flex items-center gap-2">

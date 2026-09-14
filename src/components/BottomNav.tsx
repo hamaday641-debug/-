@@ -1,13 +1,8 @@
 import React from 'react';
 import { 
-  BookOpen, 
-  BookMarked,
-  Flame,
-  Headphones, 
-  Sun, 
-  HeartHandshake, 
-  Compass, 
-  Sparkles 
+  Home,
+  ShieldCheck,
+  Sparkles
 } from 'lucide-react';
 import { ActiveTab } from '../types';
 
@@ -17,53 +12,53 @@ interface BottomNavProps {
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab }) => {
-  const tabs = [
-    { id: 'reading' as ActiveTab, label: 'المصحف', icon: BookMarked },
-    { id: 'khatmah' as ActiveTab, label: 'الورد والختمة', icon: Flame },
-    { id: 'quran' as ActiveTab, label: 'السور والآيات', icon: BookOpen },
-    { id: 'prayers' as ActiveTab, label: 'المواقيت', icon: Compass },
-    { id: 'adhkar' as ActiveTab, label: 'الأذكار', icon: Sun },
-    { id: 'duas' as ActiveTab, label: 'الأدعية', icon: HeartHandshake },
-    { id: 'reciters' as ActiveTab, label: 'التلاوات', icon: Headphones },
-    { id: 'tasbih' as ActiveTab, label: 'المسبحة', icon: Sparkles }
-  ];
+  const handleSelectHome = () => {
+    setActiveTab('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const isHomeActive = activeTab === 'home';
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-30 bg-[#1B3022]/95 dark:bg-[#101F14]/95 border-t border-[#2D4536] backdrop-blur-lg pb-safe shadow-2xl">
-      <div className="max-w-4xl mx-auto px-1 flex items-center justify-around h-16">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              id={`tab-button-${tab.id}`}
-              className={`flex-1 flex flex-col items-center justify-center py-1 px-0.5 transition-all relative ${
-                isActive
-                  ? 'text-[#E9B161] font-bold'
-                  : 'text-[#A8BCAD] hover:text-white'
-              }`}
-            >
-              <div
-                className={`p-1 rounded-xl transition-all ${
-                  isActive ? 'bg-[#2D4536] text-[#E9B161] scale-105 shadow-sm' : ''
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-              </div>
-              <span className="text-[9px] sm:text-[10px] mt-0.5 tracking-tight truncate max-w-[48px] sm:max-w-[65px] text-center font-medium">
-                {tab.label}
-              </span>
-              {isActive && (
-                <span className="absolute bottom-1 w-1 h-1 rounded-full bg-[#E9B161]"></span>
-              )}
-            </button>
-          );
-        })}
+    <nav 
+      id="main-bottom-nav" 
+      aria-label="شريط التبويبات الرئيسي"
+      className="fixed bottom-0 left-0 right-0 z-40 w-full bg-[#101D14]/95 backdrop-blur-xl border-t border-[#263D2D] shadow-[0_-4px_24px_rgba(0,0,0,0.5)] pt-2 pb-safe transition-all select-none touch-manipulation"
+      style={{
+        paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 8px)',
+        paddingLeft: 'max(env(safe-area-inset-left, 0px), 0px)',
+        paddingRight: 'max(env(safe-area-inset-right, 0px), 0px)',
+      }}
+    >
+      <div className="w-full max-w-md mx-auto px-4 flex items-center justify-center">
+        {/* الصفحة الرئيسية */}
+        <button
+          onClick={handleSelectHome}
+          id="bottom-nav-tab-home"
+          aria-label="الصفحة الرئيسية"
+          className={`flex items-center justify-center gap-2.5 w-full py-2.5 px-6 rounded-2xl transition-all duration-200 shadow-md ${
+            isHomeActive
+              ? 'bg-gradient-to-r from-[#E9B161] to-[#D99A45] text-[#142E20] font-bold shadow-[#E9B161]/25 scale-[1.01]'
+              : 'bg-[#18291F] hover:bg-[#203628] text-[#E0E7E1] hover:text-[#E9B161] border border-[#2D4536]'
+          }`}
+        >
+          <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+            isHomeActive ? 'bg-[#142E20] text-[#E9B161]' : 'bg-[#121F17] text-[#E9B161]'
+          }`}>
+            <Home className="w-4.5 h-4.5" />
+          </div>
+          <div className="flex flex-col text-right">
+            <span className="text-sm font-bold font-arabic leading-tight">
+              الصفحة الرئيسية
+            </span>
+            <span className={`text-[10px] leading-tight ${isHomeActive ? 'text-[#142E20]/80 font-medium' : 'text-[#8FA797]'}`}>
+              مركز جميع الأقسام والتطبيقات القرآنية
+            </span>
+          </div>
+          <Sparkles className={`w-4 h-4 mr-auto ${isHomeActive ? 'text-[#142E20]' : 'text-[#E9B161]'}`} />
+        </button>
       </div>
     </nav>
   );
 };
-
 

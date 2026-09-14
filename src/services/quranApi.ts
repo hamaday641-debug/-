@@ -224,6 +224,26 @@ export async function fetchAyahTafsir(
 }
 
 /**
+ * Searches across Surah names for quick navigation
+ */
+export function searchSurahs(query: string) {
+  const trimmed = query.trim();
+  if (!trimmed) return [];
+  const normalized = normalizeArabic(trimmed);
+  return SURAHS_LIST.filter((s) => {
+    const normName = normalizeArabic(s.name);
+    const normEnglish = s.englishName.toLowerCase();
+    const qLower = trimmed.toLowerCase();
+    return (
+      normName.includes(normalized) ||
+      normEnglish.includes(qLower) ||
+      String(s.number) === trimmed ||
+      String(s.pageStart) === trimmed
+    );
+  });
+}
+
+/**
  * Searches across Quran text for a given query with normalized Arabic matching
  */
 export async function searchQuran(query: string): Promise<SearchResultItem[]> {
@@ -233,22 +253,38 @@ export async function searchQuran(query: string): Promise<SearchResultItem[]> {
   const normalizedQuery = normalizeArabic(trimmed);
 
   try {
-    // Use the reliable search endpoint of AlQuran API
-    const res = await fetch(`https://api.alquran.cloud/v1/search/${encodeURIComponent(trimmed)}/all/ar.uthmani`);
+    // 1. Try search on non-vocalized Arabic text (edition: 'ar') for maximum fuzzy match coverage
+    const res = await fetch(`https://api.alquran.cloud/v1/search/${encodeURIComponent(trimmed)}/all/ar`);
     const data = await res.json();
-    if (data.code === 200 && data.data && Array.isArray(data.data.matches)) {
-      return data.data.matches.slice(0, 50).map((m: any) => ({
+    if (data.code === 200 && data.data && Array.isArray(data.data.matches) && data.data.matches.length > 0) {
+      return data.data.matches.slice(0, 60).map((m: any) => ({
         surahNumber: m.surah.number,
-        surahName: m.surah.name,
+        surahName: m.surah.name ? m.surah.name.replace(/^سُورَةُ\s*/, '') : `سورة ${m.surah.number}`,
         ayahNumberInSurah: m.numberInSurah,
         text: m.text
       }));
     }
   } catch (e) {
-    console.warn('API search failed, falling back to local cached surahs search', e);
+    console.warn('API simple search failed, trying fallback edition', e);
   }
 
-  // Fallback: search in loaded cached surahs
+  try {
+    // 2. Try search with uthmani edition
+    const res2 = await fetch(`https://api.alquran.cloud/v1/search/${encodeURIComponent(trimmed)}/all/ar.uthmani`);
+    const data2 = await res2.json();
+    if (data2.code === 200 && data2.data && Array.isArray(data2.data.matches) && data2.data.matches.length > 0) {
+      return data2.data.matches.slice(0, 60).map((m: any) => ({
+        surahNumber: m.surah.number,
+        surahName: m.surah.name ? m.surah.name.replace(/^سُورَةُ\s*/, '') : `سورة ${m.surah.number}`,
+        ayahNumberInSurah: m.numberInSurah,
+        text: m.text
+      }));
+    }
+  } catch (e2) {
+    console.warn('API uthmani search failed, checking memory cache', e2);
+  }
+
+  // 3. Fallback: search in loaded cached surahs
   const results: SearchResultItem[] = [];
   for (const [surahNum, detail] of surahCache.entries()) {
     for (const ayah of detail.ayahs) {
@@ -256,14 +292,14 @@ export async function searchQuran(query: string): Promise<SearchResultItem[]> {
       if (normText.includes(normalizedQuery)) {
         results.push({
           surahNumber: surahNum,
-          surahName: detail.name,
+          surahName: detail.name.replace(/^سُورَةُ\s*/, ''),
           ayahNumberInSurah: ayah.numberInSurah,
           text: ayah.text
         });
-        if (results.length >= 40) break;
+        if (results.length >= 60) break;
       }
     }
-    if (results.length >= 40) break;
+    if (results.length >= 60) break;
   }
 
   return results;

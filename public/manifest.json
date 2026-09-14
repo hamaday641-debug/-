@@ -1,18 +1,108 @@
 {
+  "name": "طريق الهدى: المصحف الشريف والأذكار ومواقيت الصلاة",
   "short_name": "طريق الهدى",
-  "name": "طريق الهدى - المنصة القرآنية والإسلامية الشاملة",
-  "icons": [
-    {
-      "src": "/icon.svg",
-      "type": "image/svg+xml",
-      "sizes": "512x512"
-    }
-  ],
-  "start_url": "/",
-  "background_color": "#064e3b",
-  "theme_color": "#064e3b",
+  "start_url": "./?source=pwa",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
+  "background_color": "#142419",
+  "theme_color": "#1B3022",
+  "lang": "ar",
   "dir": "rtl",
-  "lang": "ar"
+  "description": "تطبيق طريق الهدى: المصحف الشريف المرتل والمجود، أصوات كبار القراء، مواقيت الصلاة والأذان، الأذكار وحصن المسلم، وبث مباشر للحرمين الشريفين بدون إعلانات.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot-mobile.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "الرئيسية"
+    },
+    {
+      "src": "screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "المصحف الشريف"
+    }
+  ],
+  "categories": [
+    "lifestyle",
+    "books",
+    "utilities"
+  ],
+  "shortcuts": [
+    {
+      "name": "مواقيت الصلاة والقبلة",
+      "short_name": "المواقيت",
+      "description": "عرض مواقيت الصلاة والعد التنازلي للصلاة القادمة",
+      "url": "./?tab=prayers",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "المصحف الشريف",
+      "short_name": "المصحف",
+      "description": "قراءة وتلاوة القرآن الكريم بالرسم العثماني",
+      "url": "./?tab=quran",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "أذكار الصباح والمساء",
+      "short_name": "الأذكار",
+      "description": "أذكار الصباح والمساء وأذكار الصلاة",
+      "url": "./?tab=adhkar",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "widgets": [
+    {
+      "name": "ودجت مواقيت الصلاة - طريق الهدى",
+      "short_name": "مواقيت الصلاة",
+      "description": "ودجت الشاشة الرئيسية لمواقيت الصلاة والعد التنازلي للصلاة القادمة",
+      "tag": "prayer-times-widget",
+      "template": "prayer_widget_template",
+      "ms_ac_template": "/widgets/prayer-widget-template.json",
+      "data": "/widgets/prayer-widget-data.json",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "screenshot-mobile.png",
+          "sizes": "720x1280",
+          "label": "ودجت مواقيت الصلاة"
+        }
+      ],
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
 }

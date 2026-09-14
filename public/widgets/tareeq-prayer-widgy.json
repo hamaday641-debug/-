@@ -1,0 +1,27 @@
+{
+  "app": "Widgy",
+  "name": "طريق الهدى - ودجت مواقيت الصلاة لشاشة الهاتف",
+  "author": "طريق الهدى",
+  "version": 2,
+  "type": "Medium",
+  "description": "ودجت شاشة الهاتف الرئيسية لمواقيت الصلاة والعد التنازلي مع التاريخ الهجري والميلادي",
+  "preview": {
+    "title": "مواقيت الصلاة",
+    "theme": "Islamic Emerald & Gold",
+    "background": "#142419",
+    "accent": "#E9B161",
+    "textColor": "#FFFFFF",
+    "subColor": "#A8BCAD"
+  },
+  "data_sources": {
+    "primary": "https://api.aladhan.com/v1/timingsByCity",
+    "backup": "TareeqAlHuda_Local_Calculations"
+  },
+  "layers": [
+    { "id": "bg", "type": "SolidColor", "color": "#142419" },
+    { "id": "title", "type": "Text", "value": "🕌 طريق الهدى", "color": "#E9B161", "font": "Cairo-Bold", "size": 14 },
+    { "id": "nextPrayer", "type": "Text", "value": "الصلاة القادمة: {next_prayer}", "color": "#FFFFFF", "font": "Cairo-SemiBold", "size": 16 },
+    { "id": "countdown", "type": "Text", "value": "{time_to_next}", "color": "#E9B161", "font": "Monospace", "size": 28 },
+    { "id": "prayersRow", "type": "Text", "value": "الفجر {fajr} • الظهر {dhuhr} • العصر {asr} • المغرب {maghrib} • العشاء {isha}", "color": "#A8BCAD", "size": 11 }
+  ]
+}

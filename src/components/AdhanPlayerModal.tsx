@@ -7,15 +7,15 @@ import {
   RotateCcw, 
   X, 
   Sparkles, 
-  Bell, 
+  Radio, 
+  AlertCircle, 
+  RefreshCw, 
   Check, 
-  Music, 
-  HeartHandshake,
-  Compass,
-  Radio,
-  AlertCircle,
-  RefreshCw
+  HeartHandshake, 
+  Download, 
+  WifiOff 
 } from 'lucide-react';
+import { getOfflineAudioUrl, cacheAudioUrl } from '../services/offlineAudioService';
 
 export interface AdhanOption {
   id: string;
@@ -30,13 +30,12 @@ export const ADHAN_LIST: AdhanOption[] = [
   {
     id: 'makkah_ali_mulla',
     name: 'أذان الحرم المكي الشريف',
-    location: 'مكة المكرمة (الشيخ علي ملا)',
+    location: 'مكة المكرمة (الشيخ علي بن أحمد ملا - بدون تثويب)',
     country: 'المملكة العربية السعودية',
     audioUrls: [
-      'https://cdn.islamic.network/adhan/makkah.mp3',
-      'https://download.quranicaudio.com/adhan/makkah.mp3',
-      'https://ia800301.us.archive.org/24/items/AdhanMakkah/Adhan%20Makkah.mp3',
-      'https://media.sd.ma/assabile/adhan/makkah/adhan_makkah_1.mp3'
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Ali_Ibn_Ahmad_Mala_1_-_Al_Haram_Al_Maki_(%D8%B9%D9%84%D9%8A_%D8%A8%D9%86_%D8%A3%D8%AD%D9%85%D8%AF_%D9%85%D9%84%D8%A7_-_%D8%A7%D9%84%D8%AD%D8%B1%D9%85_%D8%A7%D9%84%D9%85%D9%83%D9%8A).mp3',
+      'https://download.tvquran.com/download/TvQuran.com__Athan/TvQuran.com__02.athan.mp3',
+      'https://download.tvquran.com/download/TvQuran.com__Athan/TvQuran.com__03.athan.mp3'
     ]
   },
   {
@@ -45,9 +44,9 @@ export const ADHAN_LIST: AdhanOption[] = [
     location: 'المدينة المنورة (الحرم المدني)',
     country: 'المملكة العربية السعودية',
     audioUrls: [
-      'https://cdn.islamic.network/adhan/madina.mp3',
-      'https://download.quranicaudio.com/adhan/madina.mp3',
-      'https://media.sd.ma/assabile/adhan/madinah/adhan_madina_1.mp3'
+      'https://download.tvquran.com/download/TvQuran.com__Athan/TvQuran.com__02.athan.mp3',
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Adhan_Al_Haram_Al_Madani_-_Al_Madinah_1_(%D8%A3%D8%B0%D8%A7%D9%86_%D8%A7%D9%84%D8%AD%D8%B1%D9%85_%D8%A7%D9%84%D9%85%D8%AF%D9%86%D9%8A_-_%D8%A7%D9%84%D9%85%D8%AF%D9%8A%D9%86%D8%A9_%D8%A7%D9%84%D9%85%D9%86%D9%88%D8%B1%D8%A9).mp3',
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Adhan_Al_Haram_Al_Madani_-_Al_Madinah_2_(%D8%A3%D8%B0%D8%A7%D9%86_%D8%A7%D9%84%D8%AD%D8%B1%D9%85_%D8%A7%D9%84%D9%85%D8%AF%D9%86%D9%8A_-_%D8%A7%D9%84%D9%85%D8%AF%D9%8A%D9%86%D8%A9_%D8%A7%D9%84%D9%85%D9%86%D9%88%D8%B1%D8%A9).mp3'
     ]
   },
   {
@@ -56,9 +55,20 @@ export const ADHAN_LIST: AdhanOption[] = [
     location: 'مصر التاريخي',
     country: 'جمهورية مصر العربية',
     audioUrls: [
-      'https://ia801503.us.archive.org/15/items/Adhan_Abdulbasit/Adhan_Abdulbasit.mp3',
-      'https://media.sd.ma/assabile/adhan/adhan_abdelbasset_abdessamad.mp3',
-      'https://download.quranicaudio.com/adhan/abdulbasit.mp3'
+      'https://download.tvquran.com/download/TvQuran.com__Athan/TvQuran.com__03.athan.mp3',
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Abdulbasit_Abdusamad_1_-_Egypt_(%D8%B9%D8%A8%D8%AF_%D8%A7%D9%84%D8%A8%D8%A7%D8%B3%D8%B7_%D8%B9%D8%A8%D8%AF_%D8%A7%D9%84%D8%B5%D9%85%D8%AF_-_%D9%85%D8%B5%D8%B1).mp3',
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Abdulbasit_Abdusamad_5_-_Cairo_(%D8%B9%D8%A8%D8%AF_%D8%A7%D9%84%D8%A8%D8%A7%D8%B3%D8%B7_%D8%B9%D8%A8%D8%AF_%D8%A7%D9%84%D8%B5%D9%85%D8%AF_-_%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9).mp3'
+    ]
+  },
+  {
+    id: 'alafasy',
+    name: 'أذان الشيخ مشاري راشد العفاسي',
+    location: 'دولة الكويت',
+    country: 'الكويت',
+    audioUrls: [
+      'https://download.tvquran.com/download/TvQuran.com__Athan/TvQuran.com__04.athan.mp3',
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Mishary_Rashid_Alafasy_1_-_Kuwait_(%D9%85%D8%B4%D8%A7%D8%B1%D9%8A_%D8%B1%D8%A7%D8%B4%D8%AF_%D8%A7%D9%84%D8%B9%D9%81%D8%A7%D8%B3%D9%8A_-_%D8%A7%D9%84%D9%83%D9%88%D9%8A%D8%AA).mp3',
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Mishary_Rashid_Alafasy_2_-_Kuwait_(%D9%85%D8%B4%D8%A7%D8%B1%D9%8A_%D8%B1%D8%A7%D8%B4%D8%AF_%D8%A7%D9%84%D8%B9%D9%81%D8%A7%D8%B3%D9%8A_-_%D8%A7%D9%84%D9%83%D9%88%D9%8A%D8%AA).mp3'
     ]
   },
   {
@@ -67,56 +77,85 @@ export const ADHAN_LIST: AdhanOption[] = [
     location: 'القدس الشريف',
     country: 'فلسطين',
     audioUrls: [
-      'https://ia800707.us.archive.org/15/items/AdhanAl-aqsa/Adhan%20Al-aqsa.mp3',
-      'https://media.sd.ma/assabile/adhan/adhan_al_aqsa.mp3'
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Adhan_Al_Aqsa_-_Jerusalem_(%D8%A3%D8%B0%D8%A7%D9%86_%D8%A7%D9%84%D9%85%D8%B3%D8%AC%D8%AF_%D8%A7%D9%84%D8%A3%D9%82%D8%B5%D9%89_-_%D8%A7%D9%84%D9%82%D8%AF%D8%B3).mp3',
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Najee_Qazaz_-_Al_Aqsa_Jerusalem_(%D9%86%D8%A7%D8%AC%D9%8A_%D9%82%D8%B2%D8%A7%D8%B2_-_%D8%A7%D9%84%D9%85%D8%B3%D8%AC%D8%AF_%D8%A7%D9%84%D8%A3%D9%82%D8%B5%D9%89_%D8%A7%D9%84%D9%82%D8%AF%D8%B3).mp3'
     ]
   },
   {
     id: 'fajr_makkah',
     name: 'أذان الفجر (الصلاة خير من النوم)',
-    location: 'الحرم المكي الشريف',
+    location: 'الحرم المكي والمدني الشريف',
     country: 'المملكة العربية السعودية',
     audioUrls: [
-      'https://ia801604.us.archive.org/34/items/adhan-fajr-makkah/adhan_fajr.mp3',
-      'https://cdn.islamic.network/adhan/fajr.mp3',
-      'https://media.sd.ma/assabile/adhan/adhan_fajr.mp3'
+      'https://download.tvquran.com/download/TvQuran.com__Athan/TvQuran.com__01.athan.mp3',
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Adhan_Fajr_Al_Haram_Al_Maki_(%D8%A3%D8%B0%D8%A7%D9%86_%D8%A7%D9%84%D9%81%D8%AC%D8%B1_%D8%A7%D9%84%D8%AD%D8%B1%D9%85_%D8%A7%D9%84%D9%85%D9%83%D9%8A).mp3',
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Ali_Ibn_Ahmad_Mala_2_-_Al_Haram_Al_Maki_(%D8%B9%D9%84%D9%8A_%D8%A8%D9%86_%D8%A3%D8%AD%D9%85%D8%AF_%D9%85%D9%84%D8%A7_-_%D8%A7%D9%84%D8%AD%D8%B1%D9%85_%D8%A7%D9%84%D9%85%D9%83%D9%8A).mp3',
+      'https://raw.githubusercontent.com/Kiwifu/adhan-mp3/main/Mishary_Rashid_Alafasy_3_-_Fajr_Kuwait_(%D9%85%D8%B4%D8%A7%D8%B1%D9%8A_%D8%B1%D8%A7%D8%B4%D8%AF_%D8%A7%D9%84%D8%B9%D9%81%D8%A7%D8%B3%D9%8A_-_%D9%81%D8%AC%D8%B1_%D8%A7%D9%84%D9%83%D9%88%D9%8A%D8%AA).mp3'
     ],
     isFajr: true
   }
 ];
 
-export const ADHAN_WORDS = [
-  { phrase: 'اللهُ أَكْبَرُ، اللهُ أَكْبَرُ', response: 'اللهُ أكبر، اللهُ أكبر', count: 'مرتان' },
-  { phrase: 'اللهُ أَكْبَرُ، اللهُ أَكْبَرُ', response: 'اللهُ أكبر، اللهُ أكبر', count: 'مرتان' },
-  { phrase: 'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ', response: 'أشهد أن لا إله إلا الله', count: 'مرتان' },
-  { phrase: 'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ', response: 'أشهد أن لا إله إلا الله', count: 'مرتان' },
-  { phrase: 'أَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللهِ', response: 'أشهد أن محمداً رسول الله', count: 'مرتان' },
-  { phrase: 'أَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللهِ', response: 'أشهد أن محمداً رسول الله', count: 'مرتان' },
-  { phrase: 'حَيَّ عَلَى الصَّلَاةِ', response: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ', count: 'مرتان' },
-  { phrase: 'حَيَّ عَلَى الصَّلَاةِ', response: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ', count: 'مرتان' },
-  { phrase: 'حَيَّ عَلَى الْفَلَاحِ', response: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ', count: 'مرتان' },
-  { phrase: 'حَيَّ عَلَى الْفَلَاحِ', response: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ', count: 'مرتان' },
-  { phrase: 'الصَّلَاةُ خَيْرٌ مِنَ النَّوْمِ (في الفجر)', response: 'صدقت وبررت / أو مثل قوله', count: 'في صلاة الصبح' },
-  { phrase: 'اللهُ أَكْبَرُ، اللهُ أَكْبَرُ', response: 'اللهُ أكبر، اللهُ أكبر', count: 'مرة' },
-  { phrase: 'لَا إِلَهَ إِلَّا اللهُ', response: 'لَا إِلَهَ إِلَّا اللهُ', count: 'مرة' }
-];
+export const getAdhanWords = (isFajr: boolean = false) => {
+  const baseWords = [
+    { phrase: 'اللهُ أَكْبَرُ، اللهُ أَكْبَرُ', response: 'اللهُ أكبر، اللهُ أكبر', count: 'مرتان' },
+    { phrase: 'اللهُ أَكْبَرُ، اللهُ أَكْبَرُ', response: 'اللهُ أكبر، اللهُ أكبر', count: 'مرتان' },
+    { phrase: 'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ', response: 'أشهد أن لا إله إلا الله', count: 'مرتان' },
+    { phrase: 'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ', response: 'أشهد أن لا إله إلا الله', count: 'مرتان' },
+    { phrase: 'أَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللهِ', response: 'أشهد أن محمداً رسول الله', count: 'مرتان' },
+    { phrase: 'أَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللهِ', response: 'أشهد أن محمداً رسول الله', count: 'مرتان' },
+    { phrase: 'حَيَّ عَلَى الصَّلَاةِ', response: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ', count: 'مرتان' },
+    { phrase: 'حَيَّ عَلَى الصَّلَاةِ', response: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ', count: 'مرتان' },
+    { phrase: 'حَيَّ عَلَى الْفَلَاحِ', response: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ', count: 'مرتان' },
+    { phrase: 'حَيَّ عَلَى الْفَلَاحِ', response: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ', count: 'مرتان' },
+  ];
+
+  if (isFajr) {
+    baseWords.push({
+      phrase: 'الصَّلَاةُ خَيْرٌ مِنَ النَّوْمِ (خاص بأذان الفجر فقط)',
+      response: 'صدقت وبررت / أو مثل قوله',
+      count: 'مرتان في صلاة الفجر فقط'
+    });
+  }
+
+  baseWords.push(
+    { phrase: 'اللهُ أَكْبَرُ، اللهُ أَكْبَرُ', response: 'اللهُ أكبر، اللهُ أكبر', count: 'مرة' },
+    { phrase: 'لَا إِلَهَ إِلَّا اللهُ', response: 'لَا إِلَهَ إِلَّا اللهُ', count: 'مرة' }
+  );
+
+  return baseWords;
+};
+
+export const ADHAN_WORDS = getAdhanWords(false);
 
 interface AdhanPlayerModalProps {
   isOpen: boolean;
   onClose: () => void;
   prayerName?: string;
   initialAdhanId?: string;
+  autoPlay?: boolean;
 }
 
 export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
   isOpen,
   onClose,
   prayerName = 'الصلاة',
-  initialAdhanId
+  initialAdhanId,
+  autoPlay = true
 }) => {
+  const isFajrContext = Boolean(prayerName === 'الفجر' || prayerName?.includes('فجر') || initialAdhanId === 'fajr_makkah');
+
   const [selectedAdhan, setSelectedAdhan] = useState<AdhanOption>(() => {
     try {
+      if (isFajrContext) {
+        const fajrFound = ADHAN_LIST.find((a) => a.id === 'fajr_makkah');
+        if (fajrFound) return fajrFound;
+      }
       const savedId = localStorage.getItem('tareeq_selected_adhan_id') || initialAdhanId;
+      // If user had fajr_makkah saved, but the current prayer is NOT Fajr, fallback to daytime adhan
+      if (savedId === 'fajr_makkah' && !isFajrContext) {
+        return ADHAN_LIST[0];
+      }
       const found = ADHAN_LIST.find((a) => a.id === savedId);
       return found || ADHAN_LIST[0];
     } catch {
@@ -124,14 +163,19 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
     }
   });
 
+  const isFajrActive = Boolean(selectedAdhan?.isFajr || isFajrContext);
+  const activeAdhanWords = getAdhanWords(isFajrActive);
+
   const [currentUrlIndex, setCurrentUrlIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState(180);
   const [isMuted, setIsMuted] = useState(false);
   const [audioError, setAudioError] = useState(false);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const [activeTab, setActiveTab] = useState<'player' | 'dua' | 'words'>('player');
+  const [isOfflineCached, setIsOfflineCached] = useState(false);
+  const [isDownloadingOffline, setIsDownloadingOffline] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -146,9 +190,7 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
     }
   }, [initialAdhanId]);
 
-  // Handle current active audio URL with fallbacks
-  const activeUrl = selectedAdhan.audioUrls[currentUrlIndex] || selectedAdhan.audioUrls[0];
-
+  // Clean audio on unmount or close
   useEffect(() => {
     if (!isOpen) {
       if (audioRef.current) {
@@ -156,42 +198,28 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
         audioRef.current.currentTime = 0;
       }
       setIsPlaying(false);
-      return;
     }
+  }, [isOpen]);
 
-    setAudioError(false);
-    setIsLoadingAudio(true);
-
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
-    }
-
-    const audio = audioRef.current;
-    audio.src = activeUrl;
+  // Initialize single Audio object on mount
+  useEffect(() => {
+    const audio = new Audio();
     audio.preload = 'auto';
+    audioRef.current = audio;
 
-    const handleCanPlay = () => {
+    const onTimeUpdate = () => setCurrentTime(audio.currentTime);
+    const onLoadedMetadata = () => {
+      setDuration(audio.duration || 180);
       setIsLoadingAudio(false);
       setAudioError(false);
     };
-
-    const handleLoadedMetadata = () => {
-      setDuration(audio.duration || 180);
-      setIsLoadingAudio(false);
-    };
-
-    const handleTimeUpdate = () => {
-      setCurrentTime(audio.currentTime);
-    };
-
-    const handleEnded = () => {
+    const onEnded = () => {
       setIsPlaying(false);
       setCurrentTime(0);
     };
-
-    const handleError = () => {
-      console.warn(`Adhan URL failed to load: ${activeUrl}. Trying fallback...`);
-      // Try next fallback URL if available
+    const onError = () => {
+      console.warn(`Adhan audio mirror ${currentUrlIndex} failed. Attempting next mirror...`);
+      // Try next mirror
       if (currentUrlIndex + 1 < selectedAdhan.audioUrls.length) {
         setCurrentUrlIndex((prev) => prev + 1);
       } else {
@@ -201,40 +229,70 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
       }
     };
 
-    audio.addEventListener('canplay', handleCanPlay);
-    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('error', handleError);
-
-    // Attempt to play
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          setIsPlaying(true);
-          setIsLoadingAudio(false);
-        })
-        .catch((err) => {
-          // Autoplay blocked by browser policy until user click
-          setIsPlaying(false);
-          setIsLoadingAudio(false);
-        });
-    }
+    audio.addEventListener('timeupdate', onTimeUpdate);
+    audio.addEventListener('loadedmetadata', onLoadedMetadata);
+    audio.addEventListener('ended', onEnded);
+    audio.addEventListener('error', onError);
 
     return () => {
-      audio.removeEventListener('canplay', handleCanPlay);
-      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('error', handleError);
+      audio.removeEventListener('timeupdate', onTimeUpdate);
+      audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+      audio.removeEventListener('ended', onEnded);
+      audio.removeEventListener('error', onError);
+      audio.pause();
     };
-  }, [isOpen, selectedAdhan, currentUrlIndex, activeUrl]);
+  }, [currentUrlIndex, selectedAdhan.audioUrls.length]);
 
-  const togglePlay = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio(activeUrl);
-    }
+  // Setup active audio source whenever selected adhan or url index changes
+  useEffect(() => {
+    if (!isOpen || !audioRef.current) return;
+
+    let isMounted = true;
+    const rawUrl = selectedAdhan.audioUrls[currentUrlIndex] || selectedAdhan.audioUrls[0];
+    const audio = audioRef.current;
+
+    setIsLoadingAudio(true);
+    setAudioError(false);
+
+    // Check if cached offline first
+    getOfflineAudioUrl(rawUrl).then((cachedBlobUrl) => {
+      if (!isMounted || !audioRef.current) return;
+      const finalSrc = cachedBlobUrl || rawUrl;
+      setIsOfflineCached(!!cachedBlobUrl);
+
+      audio.src = finalSrc;
+      audio.load();
+
+      if (autoPlay) {
+        audio
+          .play()
+          .then(() => {
+            if (isMounted) {
+              setIsPlaying(true);
+              setIsLoadingAudio(false);
+              setAudioError(false);
+              cacheAudioUrl(rawUrl);
+            }
+          })
+          .catch((err) => {
+            console.warn('Adhan autoplay notice:', err);
+            if (isMounted) {
+              setIsLoadingAudio(false);
+              setIsPlaying(false);
+            }
+          });
+      } else {
+        setIsLoadingAudio(false);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, selectedAdhan, currentUrlIndex, autoPlay]);
+
+  const togglePlay = async () => {
+    if (!audioRef.current) return;
     const audio = audioRef.current;
 
     if (isPlaying) {
@@ -243,9 +301,11 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
     } else {
       setIsLoadingAudio(true);
       setAudioError(false);
-      
-      if (!audio.src || audio.src === '') {
-        audio.src = activeUrl;
+
+      const rawUrl = selectedAdhan.audioUrls[currentUrlIndex] || selectedAdhan.audioUrls[0];
+      const offlineUrl = await getOfflineAudioUrl(rawUrl);
+      if (offlineUrl && audio.src !== offlineUrl) {
+        audio.src = offlineUrl;
       }
 
       audio
@@ -254,29 +314,29 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
           setIsPlaying(true);
           setIsLoadingAudio(false);
           setAudioError(false);
+
+          // Background cache for next time
+          cacheAudioUrl(rawUrl);
         })
         .catch((err) => {
-          console.warn('Audio play error:', err);
-          setIsPlaying(false);
-          setIsLoadingAudio(false);
-          // Try next fallback URL if primary fails
+          console.warn('Adhan play error:', err);
+          // Try next mirror
           if (currentUrlIndex + 1 < selectedAdhan.audioUrls.length) {
-            setCurrentUrlIndex((prev) => prev + 1);
+            setCurrentUrlIndex((p) => p + 1);
           } else {
             setAudioError(true);
+            setIsPlaying(false);
+            setIsLoadingAudio(false);
           }
         });
     }
   };
 
+
   const handleRestart = () => {
     if (!audioRef.current) return;
     audioRef.current.currentTime = 0;
-    audioRef.current.play().then(() => {
-      setIsPlaying(true);
-    }).catch(() => {
-      setIsPlaying(false);
-    });
+    audioRef.current.play().then(() => setIsPlaying(true)).catch(console.warn);
   };
 
   const toggleMute = () => {
@@ -286,13 +346,27 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
   };
 
   const handleSelectAdhan = (adhan: AdhanOption) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
     setSelectedAdhan(adhan);
     setCurrentUrlIndex(0);
     setAudioError(false);
+    setIsPlaying(false);
     try {
       localStorage.setItem('tareeq_selected_adhan_id', adhan.id);
     } catch {
       // ignore
+    }
+  };
+
+  const handleSaveAdhanOffline = async () => {
+    setIsDownloadingOffline(true);
+    const rawUrl = selectedAdhan.audioUrls[0];
+    const success = await cacheAudioUrl(rawUrl);
+    setIsDownloadingOffline(false);
+    if (success) {
+      setIsOfflineCached(true);
     }
   };
 
@@ -311,10 +385,7 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
         className="w-full max-w-lg rounded-3xl bg-gradient-to-b from-[#142419] via-[#1B3022] to-[#0D1811] border border-[#3D5A47] text-white shadow-2xl overflow-hidden my-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Hidden native audio element */}
-        <audio ref={audioRef} preload="auto" />
-
-        {/* Header with Close */}
+        {/* Header */}
         <div className="p-4 sm:p-5 flex items-center justify-between border-b border-[#2D4536]/80 bg-[#101F15]/90">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-[#E9B161]/20 border border-[#E9B161]/50 flex items-center justify-center text-[#E9B161]">
@@ -324,9 +395,16 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
               <h3 className="font-bold text-base sm:text-lg text-white font-scheherazade">
                 نداء الصلاة • أذان {prayerName}
               </h3>
-              <span className="text-[11px] text-[#A8BCAD] block">
-                {selectedAdhan.name} ({selectedAdhan.location})
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-[#A8BCAD]">
+                  {selectedAdhan.name} ({selectedAdhan.location})
+                </span>
+                {isOfflineCached && (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 font-mono">
+                    محفوظ بدون نت
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -380,10 +458,10 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
           </button>
         </div>
 
-        {/* TAB 1: PLAYER & RECITER CHOOSER */}
+        {/* TAB 1: PLAYER */}
         {activeTab === 'player' && (
           <div className="p-5 space-y-5">
-            {/* Visual Mosque Kaaba Badge & Animated Waves */}
+            {/* Visual Mosque Badge & Animated Waves */}
             <div className="p-6 rounded-2xl bg-gradient-to-br from-[#101F15] via-[#1B3022] to-[#142419] border border-[#2D4536] text-center relative overflow-hidden shadow-inner">
               <div className="w-20 h-20 mx-auto rounded-full bg-[#1B3022] border-2 border-[#E9B161] p-2 flex items-center justify-center shadow-lg shadow-[#E9B161]/20 relative mb-3">
                 <img src="/icon.svg" alt="الكعبة المشرفة" className="w-full h-full object-contain" />
@@ -402,7 +480,7 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
                 {selectedAdhan.location} • {selectedAdhan.country}
               </p>
 
-              {/* Live Soundwave bar animation */}
+              {/* Soundwaves */}
               <div className="flex items-center justify-center gap-1.5 h-8 mt-4">
                 {[40, 70, 100, 60, 90, 45, 80, 55, 95, 65, 35].map((h, i) => (
                   <div
@@ -423,7 +501,7 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
                 <input
                   type="range"
                   min={0}
-                  max={duration || 100}
+                  max={duration || 180}
                   value={currentTime}
                   onChange={(e) => {
                     const val = Number(e.target.value);
@@ -453,22 +531,19 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
               <div className="p-3 rounded-xl bg-amber-950/60 border border-amber-500/50 text-amber-200 text-xs flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>انقر على زر "تشغيل الأذان" لبدء الاستماع</span>
+                  <span>انقر على زر "تشغيل الأذان" للاستماع فوراً</span>
                 </div>
                 <button
-                  onClick={() => {
-                    setCurrentUrlIndex((prev) => (prev + 1) % selectedAdhan.audioUrls.length);
-                    togglePlay();
-                  }}
+                  onClick={togglePlay}
                   className="px-2.5 py-1 rounded bg-[#E9B161] text-[#142419] font-bold text-[11px]"
                 >
-                  إعادة المحاولة
+                  تشغيل
                 </button>
               </div>
             )}
 
             {/* Controls Bar */}
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-3 sm:gap-4">
               <button
                 onClick={toggleMute}
                 className="p-3 rounded-xl bg-[#142419] hover:bg-[#233F2E] border border-[#2D4536] text-[#A8BCAD] hover:text-white transition-colors"
@@ -485,13 +560,34 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
                 <RotateCcw className="w-5 h-5" />
               </button>
 
-              {/* Main Play / Pause Button with prominent touch area */}
+              {/* Main Play / Pause Button */}
               <button
                 onClick={togglePlay}
-                className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#E9B161] to-[#D99A45] hover:brightness-110 active:scale-95 text-[#142419] font-bold text-sm sm:text-base flex items-center gap-2 shadow-lg shadow-[#E9B161]/25 transition-all scale-100 hover:scale-105"
+                id="modal-adhan-play-pause-btn"
+                className="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#E9B161] to-[#D99A45] hover:brightness-110 active:scale-95 text-[#142419] font-bold text-sm sm:text-base flex items-center gap-2 shadow-lg shadow-[#E9B161]/25 transition-all scale-100 hover:scale-105"
               >
                 {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 fill-current" />}
                 <span>{isPlaying ? 'إيقاف مؤقت' : 'تشغيل الأذان الآن'}</span>
+              </button>
+
+              {/* Save Offline Button */}
+              <button
+                onClick={handleSaveAdhanOffline}
+                disabled={isOfflineCached || isDownloadingOffline}
+                className={`p-3 rounded-xl border transition-colors ${
+                  isOfflineCached 
+                    ? 'bg-emerald-950/70 border-emerald-700 text-emerald-300' 
+                    : 'bg-[#142419] hover:bg-[#233F2E] border-[#2D4536] text-[#E9B161]'
+                }`}
+                title={isOfflineCached ? 'محفوظ للعمل بدون نت' : 'حفظ في الهاتف بدون نت'}
+              >
+                {isDownloadingOffline ? (
+                  <RefreshCw className="w-5 h-5 animate-spin" />
+                ) : isOfflineCached ? (
+                  <Check className="w-5 h-5 text-emerald-400" />
+                ) : (
+                  <Download className="w-5 h-5" />
+                )}
               </button>
             </div>
 
@@ -500,7 +596,7 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
               <span className="text-xs font-semibold text-[#A8BCAD] block">
                 اختر صوت المؤذن المفضل:
               </span>
-              <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-1">
+              <div className="grid grid-cols-1 gap-2 max-h-44 overflow-y-auto pr-1">
                 {ADHAN_LIST.map((adh) => {
                   const isSelected = adh.id === selectedAdhan.id;
                   return (
@@ -565,7 +661,7 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
                 <span>الدعاء بين الأذان والإقامة مستجاب:</span>
               </h5>
               <p className="text-[#E0E7E1] leading-relaxed">
-                قال النبي ﷺ: «الدُّعَاءُ لَا يُرَدُّ بَيْنَ الأَذَانِ وَالإِقَامَةِ» [رواه الترمذي وأبو داود]. فاغتنم هذا الوقت الفضيل بالدعاء لنفسك ولوالديك وللمسلمين.
+                قال النبي ﷺ: «الدُّعَاءُ لَا يُرَدُّ بَيْنَ الأَذَانِ وَالإِقَامَةِ» [رواه الترمذي وأبو داود].
               </p>
             </div>
           </div>
@@ -579,7 +675,7 @@ export const AdhanPlayerModal: React.FC<AdhanPlayerModalProps> = ({
             </div>
 
             <div className="space-y-2">
-              {ADHAN_WORDS.map((item, idx) => (
+              {activeAdhanWords.map((item, idx) => (
                 <div 
                   key={idx}
                   className="p-3 rounded-xl bg-[#142419]/70 border border-[#2D4536] flex items-center justify-between gap-3 text-xs"

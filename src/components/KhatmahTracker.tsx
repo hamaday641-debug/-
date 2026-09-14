@@ -26,7 +26,7 @@ import { SURAHS_LIST, JUZ_NAMES } from '../data/surahs';
 import { toArabicNumerals } from '../services/quranApi';
 
 interface KhatmahTrackerProps {
-  onGoToReadingPage: (page: number) => void;
+  onGoToReadingPage: (page: number, fromKhatmah?: boolean) => void;
 }
 
 const DEFAULT_PLAN: KhatmahPlan = {
@@ -81,15 +81,38 @@ export const KhatmahTracker: React.FC<KhatmahTrackerProps> = ({ onGoToReadingPag
   const [customDaysInput, setCustomDaysInput] = useState(String(plan.targetDays || 30));
   const [copiedDuaa, setCopiedDuaa] = useState(false);
 
-  // Save changes to localStorage
+  // Save changes to localStorage & broadcast event
   const savePlan = (newPlan: KhatmahPlan) => {
     setPlan(newPlan);
     try {
       localStorage.setItem('nour_khatmah_plan', JSON.stringify(newPlan));
+      window.dispatchEvent(new CustomEvent('khatmah_updated', { detail: newPlan }));
     } catch {
       // ignore
     }
   };
+
+  // Keep plan in sync with Quran Reading View auto-save in real time
+  useEffect(() => {
+    const handleUpdate = () => {
+      try {
+        const saved = localStorage.getItem('nour_khatmah_plan');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setPlan(parsed);
+          setManualPageInput(String(parsed.currentPage));
+        }
+      } catch {
+        // ignore
+      }
+    };
+    window.addEventListener('khatmah_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener('khatmah_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, []);
 
   // Determine current Juz and page details
   const totalPages = 604;
@@ -232,13 +255,19 @@ export const KhatmahTracker: React.FC<KhatmahTrackerProps> = ({ onGoToReadingPag
             <p className="text-xs sm:text-sm text-[#55695C] dark:text-[#A8BCAD]">
               موضعك الحالي: <strong className="text-[#1B3022] dark:text-white font-bold">سورة {currentSurah.name}</strong> • {JUZ_NAMES[currentJuz - 1]} (الحزب {currentHizb})
             </p>
+
+            {/* Auto-save notification badge */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              <span>الحفظ التلقائي مفعّل: يتم تحديث موضع الختمة تلقائياً مع كل صفحة تقرأها في المصحف.</span>
+            </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row items-stretch gap-2.5 w-full md:w-auto">
             {/* Direct Jump to Reading View */}
             <button
-              onClick={() => onGoToReadingPage(plan.currentPage)}
+              onClick={() => onGoToReadingPage(plan.currentPage, true)}
               id="start-today-wird-btn"
               className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#1B3022] hover:bg-[#233F2E] text-[#E9B161] font-bold text-sm shadow-md border border-[#3D5A47] transition-all hover:scale-[1.02]"
             >
@@ -377,7 +406,7 @@ export const KhatmahTracker: React.FC<KhatmahTrackerProps> = ({ onGoToReadingPag
             return (
               <button
                 key={jNum}
-                onClick={() => onGoToReadingPage(validPage)}
+                onClick={() => onGoToReadingPage(validPage, true)}
                 className={`py-2 px-1 rounded-xl text-center border transition-all text-xs flex flex-col items-center justify-center gap-1 ${
                   isDone
                     ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'

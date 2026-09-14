@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ودجت مواقيت الصلاة - طريق الهدى</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    body {
+      background: #0B1710;
+      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+      color: #FFFFFF;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      overflow: hidden;
+    }
+    .widget-card {
+      width: 100%;
+      max-width: 520px;
+      background: linear-gradient(145deg, #183120, #0E1F14 60%, #08120B);
+      border: 2px solid #E9B161;
+      border-radius: 28px;
+      padding: 16px 20px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .widget-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #E9B161, transparent);
+    }
+    .widget-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .app-title {
+      font-weight: 900;
+      font-size: 15px;
+      color: #E9B161;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .live-clock-badge {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(233, 177, 97, 0.3);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-family: monospace, sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      color: #FFFFFF;
+      letter-spacing: 1px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .location-date {
+      text-align: left;
+      font-size: 11px;
+      color: #A8BCAD;
+    }
+    .location-city {
+      font-weight: 700;
+      color: #E0EAE2;
+    }
+    .next-prayer-banner {
+      background: linear-gradient(135deg, rgba(233, 177, 97, 0.15), rgba(0, 0, 0, 0.35));
+      border: 1px solid rgba(233, 177, 97, 0.3);
+      border-radius: 18px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .next-prayer-info h3 {
+      font-size: 11px;
+      color: #A8BCAD;
+      font-weight: 600;
+    }
+    .next-prayer-name {
+      font-size: 20px;
+      font-weight: 900;
+      color: #FFFFFF;
+      line-height: 1.2;
+    }
+    .next-prayer-time {
+      font-size: 13px;
+      color: #E9B161;
+      font-weight: 700;
+      font-family: monospace;
+    }
+    .countdown-box {
+      text-align: center;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 14px;
+      border-radius: 14px;
+    }
+    .countdown-label {
+      font-size: 10px;
+      color: #A8BCAD;
+    }
+    .countdown-value {
+      font-family: monospace;
+      font-size: 18px;
+      font-weight: 900;
+      color: #50C878;
+      direction: ltr;
+    }
+    .prayers-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+    .prayer-chip {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 8px 4px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .prayer-chip.active {
+      background: linear-gradient(180deg, rgba(233, 177, 97, 0.25), rgba(20, 36, 25, 0.8));
+      border-color: #E9B161;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(233, 177, 97, 0.2);
+    }
+    .prayer-chip .p-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #A8BCAD;
+      margin-bottom: 2px;
+    }
+    .prayer-chip.active .p-name {
+      color: #E9B161;
+    }
+    .prayer-chip .p-time {
+      font-size: 12px;
+      font-weight: 900;
+      font-family: monospace;
+      color: #FFFFFF;
+    }
+    .widget-footer {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #7A9382;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .open-app-btn {
+      color: #E9B161;
+      text-decoration: none;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="widget-card" id="widgetCard">
+    <!-- Header -->
+    <div class="widget-header">
+      <div class="app-title">
+        <span>🕌</span>
+        <span>طريق الهدى</span>
+      </div>
+
+      <div class="live-clock-badge" id="liveClock">
+        --:--:--
+      </div>
+
+      <div class="location-date">
+        <div class="location-city" id="cityText">مكة المكرمة</div>
+        <div id="hijriText">--</div>
+      </div>
+    </div>
+
+    <!-- Next Prayer Live Banner -->
+    <div class="next-prayer-banner">
+      <div class="next-prayer-info">
+        <h3>الصلاة القادمة</h3>
+        <div class="next-prayer-name" id="nextPrayerName">صلاة الظهر</div>
+        <div class="next-prayer-time" id="nextPrayerTime">--:--</div>
+      </div>
+
+      <div class="countdown-box">
+        <div class="countdown-label">الوقت المتبقي</div>
+        <div class="countdown-value" id="countdownValue">--:--:--</div>
+      </div>
+    </div>
+
+    <!-- Prayers Grid (5 Prayers) -->
+    <div class="prayers-grid" id="prayersGrid">
+      <div class="prayer-chip" id="chip-fajr">
+        <div class="p-name">الفجر</div>
+        <div class="p-time" id="time-fajr">--:--</div>
+      </div>
+      <div class="prayer-chip" id="chip-dhuhr">
+        <div class="p-name">الظهر</div>
+        <div class="p-time" id="time-dhuhr">--:--</div>
+      </div>
+      <div class="prayer-chip" id="chip-asr">
+        <div class="p-name">العصر</div>
+        <div class="p-time" id="time-asr">--:--</div>
+      </div>
+      <div class="prayer-chip" id="chip-maghrib">
+        <div class="p-name">المغرب</div>
+        <div class="p-time" id="time-maghrib">--:--</div>
+      </div>
+      <div class="prayer-chip" id="chip-isha">
+        <div class="p-name">العشاء</div>
+        <div class="p-time" id="time-isha">--:--</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="widget-footer">
+      <span id="gregorianText">--</span>
+      <a href="/" target="_blank" class="open-app-btn">فتح التطبيق الكامل ↗</a>
+    </div>
+  </div>
+
+  <script>
+    // Load cached, URL params, or default city coordinates
+    let currentCity = { name: "مكة المكرمة", lat: 21.4225, lng: 39.8262, timezone: 3 };
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('city') && urlParams.get('lat') && urlParams.get('lng')) {
+        currentCity = {
+          name: decodeURIComponent(urlParams.get('city') || 'مكة المكرمة'),
+          lat: parseFloat(urlParams.get('lat') || '21.4225'),
+          lng: parseFloat(urlParams.get('lng') || '39.8262'),
+          timezone: parseFloat(urlParams.get('tz') || '3')
+        };
+        try { localStorage.setItem('nour_saved_city', JSON.stringify(currentCity)); } catch(e) {}
+      } else {
+        const saved = localStorage.getItem('nour_saved_city');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.lat) currentCity = parsed;
+        }
+      }
+    } catch(e) {}
+
+    // Calculation helper
+    function calculateTimes(date, lat, lng, timezone) {
+      const start = new Date(date.getFullYear(), 0, 0);
+      const diff = date.getTime() - start.getTime();
+      const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const B = (2 * Math.PI * (dayOfYear - 81)) / 365;
+      const EoT = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+      const declination = 23.45 * Math.sin(((dayOfYear - 81) * 2 * Math.PI) / 365) * (Math.PI / 180);
+      const latRad = (lat * Math.PI) / 180;
+      const solarNoonMinutes = 720 - 4 * lng - EoT + timezone * 60;
+      const dhuhr = solarNoonMinutes / 60;
+
+      const getHA = (deg) => {
+        const rad = (deg * Math.PI) / 180;
+        const cosHA = (Math.cos(rad) - Math.sin(latRad) * Math.sin(declination)) / (Math.cos(latRad) * Math.cos(declination));
+        if (cosHA > 1) return 0;
+        if (cosHA < -1) return Math.PI;
+        return Math.acos(cosHA);
+      };
+
+      const fajrHA = getHA(90 + 19.5) * (180 / Math.PI) * 4;
+      const fajr = (solarNoonMinutes - fajrHA) / 60;
+
+      const sunsetHA = getHA(90 + 0.833) * (180 / Math.PI) * 4;
+      const maghrib = (solarNoonMinutes + sunsetHA) / 60;
+
+      const noonAlt = Math.abs(latRad - declination);
+      const asrAlt = Math.atan(1 / (1 + Math.tan(noonAlt)));
+      const asrHA = (Math.acos((Math.sin(asrAlt) - Math.sin(latRad) * Math.sin(declination)) / (Math.cos(latRad) * Math.cos(declination))) * 180) / Math.PI * 4;
+      const asr = (solarNoonMinutes + asrHA) / 60;
+
+      const ishaHA = getHA(90 + 17.5) * (180 / Math.PI) * 4;
+      const isha = (solarNoonMinutes + ishaHA) / 60;
+
+      const format = (dec) => {
+        const n = (dec + 24) % 24;
+        const h = Math.floor(n);
+        const m = Math.floor((n - h) * 60);
+        const h12 = h % 12 || 12;
+        const ampm = h >= 12 ? 'م' : 'ص';
+        return {
+          raw: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
+          formatted: `${h12}:${String(m).padStart(2, '0')} ${ampm}`,
+          date: (baseDate) => {
+            const d = new Date(baseDate);
+            d.setHours(h, m, 0, 0);
+            return d;
+          }
+        };
+      };
+
+      return {
+        fajr: format(fajr),
+        dhuhr: format(dhuhr),
+        asr: format(asr),
+        maghrib: format(maghrib),
+        isha: format(isha)
+      };
+    }
+
+    function updateWidget() {
+      const now = new Date();
+      
+      // Live Clock
+      const hours = now.getHours();
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const secs = String(now.getSeconds()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'م' : 'ص';
+      const h12 = hours % 12 || 12;
+      document.getElementById('liveClock').textContent = `${String(h12).padStart(2, '0')}:${mins}:${secs} ${ampm}`;
+
+      document.getElementById('cityText').textContent = currentCity.name;
+
+      // Dates
+      try {
+        const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }).format(now);
+        document.getElementById('hijriText').textContent = hijri;
+
+        const greg = now.toLocaleDateString('ar-EG', {
+          weekday: 'short',
+          day: 'numeric',
+          month: 'short'
+        });
+        document.getElementById('gregorianText').textContent = greg;
+      } catch(e) {}
+
+      // Calculate Prayer Times
+      const times = calculateTimes(now, currentCity.lat, currentCity.lng, currentCity.timezone);
+      document.getElementById('time-fajr').textContent = times.fajr.formatted;
+      document.getElementById('time-dhuhr').textContent = times.dhuhr.formatted;
+      document.getElementById('time-asr').textContent = times.asr.formatted;
+      document.getElementById('time-maghrib').textContent = times.maghrib.formatted;
+      document.getElementById('time-isha').textContent = times.isha.formatted;
+
+      // Determine next prayer and countdown
+      const prayerList = [
+        { key: 'fajr', name: 'الفجر', obj: times.fajr },
+        { key: 'dhuhr', name: 'الظهر', obj: times.dhuhr },
+        { key: 'asr', name: 'العصر', obj: times.asr },
+        { key: 'maghrib', name: 'المغرب', obj: times.maghrib },
+        { key: 'isha', name: 'العشاء', obj: times.isha }
+      ];
+
+      let nextPrayer = null;
+      let nextPrayerDate = null;
+
+      for (const p of prayerList) {
+        const pDate = p.obj.date(now);
+        if (pDate > now) {
+          nextPrayer = p;
+          nextPrayerDate = pDate;
+          break;
+        }
+      }
+
+      // If all passed today, next is tomorrow's Fajr
+      if (!nextPrayer) {
+        const tomorrow = new Date(now.getTime() + 86400000);
+        const tomorrowTimes = calculateTimes(tomorrow, currentCity.lat, currentCity.lng, currentCity.timezone);
+        nextPrayer = { key: 'fajr', name: 'الفجر', obj: tomorrowTimes.fajr };
+        nextPrayerDate = tomorrowTimes.fajr.date(tomorrow);
+      }
+
+      document.getElementById('nextPrayerName').textContent = `صلاة ${nextPrayer.name}`;
+      document.getElementById('nextPrayerTime').textContent = nextPrayer.obj.formatted;
+
+      // Highlight active chip
+      ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].forEach(k => {
+        const el = document.getElementById(`chip-${k}`);
+        if (el) {
+          if (k === nextPrayer.key) {
+            el.classList.add('active');
+          } else {
+            el.classList.remove('active');
+          }
+        }
+      });
+
+      // Countdown
+      const diffMs = nextPrayerDate.getTime() - now.getTime();
+      if (diffMs > 0) {
+        const diffSecs = Math.floor(diffMs / 1000);
+        const h = Math.floor(diffSecs / 3600);
+        const m = Math.floor((diffSecs % 3600) / 60);
+        const s = diffSecs % 60;
+        document.getElementById('countdownValue').textContent = 
+          `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      } else {
+        document.getElementById('countdownValue').textContent = 'حان وقت الصلاة!';
+      }
+    }
+
+    // Resilient update runner
+    function safeUpdate() {
+      try {
+        updateWidget();
+      } catch (err) {
+        console.error("Widget tick error:", err);
+      }
+    }
+
+    // Run immediately and every second
+    safeUpdate();
+    setInterval(safeUpdate, 1000);
+
+    // requestAnimationFrame tick loop
+    let lastTickSecond = -1;
+    function animTick() {
+      const currentSec = new Date().getSeconds();
+      if (currentSec !== lastTickSecond) {
+        lastTickSecond = currentSec;
+        safeUpdate();
+      }
+      requestAnimationFrame(animTick);
+    }
+    requestAnimationFrame(animTick);
+
+    // Resume immediately when screen turns on or becomes visible
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        safeUpdate();
+      }
+    });
+    window.addEventListener('focus', safeUpdate);
+  </script>
+</body>
+</html>

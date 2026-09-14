@@ -7,10 +7,13 @@ import {
   User, 
   CheckCircle2,
   Flame,
-  Volume2
+  Volume2,
+  BookOpen,
+  Sparkles,
+  Info
 } from 'lucide-react';
-import { Reciter, ReciterCategory } from '../types';
-import { RECITERS_LIST, RECITER_CATEGORIES } from '../data/reciters';
+import { Reciter, ReciterCategory, RiwayahType } from '../types';
+import { RECITERS_LIST, RECITER_CATEGORIES, RIWAYAT_INFO } from '../data/reciters';
 import { SURAHS_LIST } from '../data/surahs';
 import { useAudio } from '../context/AudioContext';
 import { normalizeArabic } from '../services/quranApi';
@@ -33,7 +36,8 @@ export const RecitersDirectory: React.FC<RecitersDirectoryProps> = ({ onSelectSu
   } = useAudio();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<ReciterCategory | 'all' | 'favorites'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<ReciterCategory | 'all' | 'favorites' | 'by_riwayah'>('all');
+  const [selectedRiwayah, setSelectedRiwayah] = useState<RiwayahType | 'all'>('all');
   const [activeSurahPickerReciter, setActiveSurahPickerReciter] = useState<Reciter | null>(null);
 
   const filteredReciters = RECITERS_LIST.filter((reciter) => {
@@ -49,16 +53,27 @@ export const RecitersDirectory: React.FC<RecitersDirectoryProps> = ({ onSelectSu
       subNorm.includes(qNorm) ||
       riwayahNorm.includes(qNorm);
 
-    // Category
+    // Category & Riwayah
     let matchesCat = true;
     if (selectedCategory === 'favorites') {
       matchesCat = favoriteReciters.includes(reciter.id);
+    } else if (selectedCategory === 'by_riwayah') {
+      if (selectedRiwayah !== 'all') {
+        matchesCat = reciter.riwayah === selectedRiwayah;
+      }
     } else if (selectedCategory !== 'all') {
       matchesCat = reciter.category === selectedCategory;
     }
 
+    // Direct Riwayah filter when not in by_riwayah category mode
+    if (selectedRiwayah !== 'all' && selectedCategory !== 'by_riwayah') {
+      matchesCat = matchesCat && reciter.riwayah === selectedRiwayah;
+    }
+
     return matchesSearch && matchesCat;
   });
+
+  const currentRiwayahDetails = RIWAYAT_INFO.find((r) => r.id === selectedRiwayah);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 pb-28">
@@ -67,19 +82,78 @@ export const RecitersDirectory: React.FC<RecitersDirectoryProps> = ({ onSelectSu
         <div className="relative z-10 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#142419] border border-[#2D4536] text-[#E9B161] text-xs font-semibold mb-3">
             <Headphones className="w-3.5 h-3.5" />
-            <span>مكتبة التلاوات المعتمدة الموثوقة</span>
+            <span>مكتبة القراء والروايات القرآنية المتواترة</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-[#E9B161] font-scheherazade leading-tight mb-2">
-            أصوات الحرمين الشريفين وأساطين دولة التلاوة
+            أصوات الحرمين الشريفين، دولة التلاوة، والروايات القرآنية
           </h2>
           <p className="text-xs sm:text-sm text-[#A8BCAD] leading-relaxed">
-            استمع لكبار القراء مع ضبط فوري مطابق تماماً لاسم كل شيخ وتلاوته الحقيقية المعتمدة بجودة صوتية عالية.
+            استمع لكبار القراء برواية حفص عن عاصم، ورش، قالون، الدوري، السوسي، شعبة، وخلف عن حمزة بدقة عالية.
           </p>
         </div>
 
         <div className="absolute left-6 -bottom-10 opacity-10 text-9xl font-scheherazade text-[#E9B161] select-none pointer-events-none hidden sm:block">
           صوت
         </div>
+      </div>
+
+      {/* Riwayah Filter Ribbon */}
+      <div className="p-4 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-3">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-[#E9B161]" />
+            <span className="text-xs font-bold text-stone-800 dark:text-stone-100">تصفية حسب الرواية القرآنية:</span>
+          </div>
+          {selectedRiwayah !== 'all' && (
+            <button
+              onClick={() => setSelectedRiwayah('all')}
+              className="text-[11px] text-[#E9B161] hover:underline font-bold"
+            >
+              إعادة ضبط للكل
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
+          <button
+            onClick={() => setSelectedRiwayah('all')}
+            className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 ${
+              selectedRiwayah === 'all'
+                ? 'bg-[#1B3022] text-[#E9B161] dark:bg-[#E9B161] dark:text-[#1B3022] shadow-sm'
+                : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200'
+            }`}
+          >
+            جميع الروايات
+          </button>
+          {RIWAYAT_INFO.map((rw) => (
+            <button
+              key={rw.id}
+              onClick={() => setSelectedRiwayah(rw.id)}
+              className={`px-3.5 py-1.5 rounded-xl font-bold transition-all shrink-0 flex items-center gap-1.5 ${
+                selectedRiwayah === rw.id
+                  ? 'bg-[#1B3022] text-[#E9B161] dark:bg-[#E9B161] dark:text-[#1B3022] shadow-sm'
+                  : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+              }`}
+            >
+              <span>{rw.id}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Selected Riwayah Info Card */}
+        {currentRiwayahDetails && (
+          <div className="p-3.5 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-800/60 text-xs space-y-1.5 animate-fadeIn">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-bold text-amber-900 dark:text-amber-200">{currentRiwayahDetails.name}</span>
+              <span className="text-[10px] text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50 px-2 py-0.5 rounded-full">
+                انتشارها: {currentRiwayahDetails.geography}
+              </span>
+            </div>
+            <p className="text-stone-600 dark:text-stone-300 text-[11px] leading-relaxed">
+              {currentRiwayahDetails.description}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Recently Used Reciters Bar */}
@@ -121,7 +195,7 @@ export const RecitersDirectory: React.FC<RecitersDirectoryProps> = ({ onSelectSu
           <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A8BCAD]" />
           <input
             type="text"
-            placeholder="ابحث باسم القارئ (مثلاً: السديس، المنشاوي، الحصري، العفاسي، المعيقلي)..."
+            placeholder="ابحث باسم القارئ (مثلاً: مصطفى إسماعيل، السديس، المنشاوي، الحصري، العفاسي، ورش، قالون)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-4 pr-10 py-3 rounded-2xl bg-white dark:bg-[#142419] border border-[#2D4536]/30 text-slate-900 dark:text-[#E0E7E1] placeholder:text-[#A8BCAD] focus:outline-none focus:ring-2 focus:ring-[#E9B161]/50 shadow-sm text-sm"
@@ -138,7 +212,7 @@ export const RecitersDirectory: React.FC<RecitersDirectoryProps> = ({ onSelectSu
                 : 'bg-white dark:bg-[#142419] text-slate-600 dark:text-[#A8BCAD] border border-[#2D4536]/30'
             }`}
           >
-            جميع القراء ({RECITERS_LIST.length})
+            جميع القراء ({filteredReciters.length})
           </button>
 
           <button
@@ -228,12 +302,17 @@ export const RecitersDirectory: React.FC<RecitersDirectoryProps> = ({ onSelectSu
 
                 {/* Riwayah & Style Badges */}
                 <div className="flex items-center gap-1.5 flex-wrap my-3">
-                  <span className="text-[11px] px-2 py-0.5 rounded-md bg-[#1B3022]/10 dark:bg-[#142419] border border-[#2D4536]/30 text-[#1B3022] dark:text-[#A8BCAD] font-mono">
+                  <span className="text-[11px] px-2.5 py-0.5 rounded-md bg-[#1B3022]/10 dark:bg-[#142419] border border-[#2D4536]/30 text-[#1B3022] dark:text-[#A8BCAD] font-bold">
                     رواية {reciter.riwayah}
                   </span>
                   {reciter.style && (
                     <span className="text-[11px] px-2 py-0.5 rounded-md bg-[#E9B161]/10 dark:bg-[#E9B161]/20 border border-[#E9B161]/30 text-[#8B6014] dark:text-[#E9B161]">
                       مصحف {reciter.style}
+                    </span>
+                  )}
+                  {reciter.origin && (
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400">
+                      {reciter.origin}
                     </span>
                   )}
                 </div>

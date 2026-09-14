@@ -1,3 +1,12 @@
+export type ThemeMode = 
+  | 'emerald' 
+  | 'pitch_black' 
+  | 'royal_purple' 
+  | 'midnight_navy' 
+  | 'warm_amber' 
+  | 'pure_white' 
+  | 'light';
+
 export type RevelationType = 'Meccan' | 'Medinan';
 
 export interface SurahMeta {
@@ -35,7 +44,17 @@ export interface SurahDetail {
   ayahs: Ayah[];
 }
 
-export type ReciterCategory = 'haram_makkah' | 'haram_madinah' | 'egypt_masters' | 'renowned';
+export type ReciterCategory = 'haram_makkah' | 'haram_madinah' | 'egypt_masters' | 'renowned' | 'riwayah_masters';
+
+export type RiwayahType = 
+  | 'حفص عن عاصم'
+  | 'ورش عن نافع'
+  | 'قالون عن نافع'
+  | 'الدوري عن أبي عمرو'
+  | 'السوسي عن أبي عمرو'
+  | 'شعبة عن عاصم'
+  | 'خلف عن حمزة'
+  | 'رويس عن يعقوب';
 
 export interface Reciter {
   id: string;
@@ -43,10 +62,14 @@ export interface Reciter {
   subname: string;
   category: ReciterCategory;
   riwayah: string;
-  style?: 'مرتل' | 'مجود' | 'معلم';
-  everyAyahFolder: string; // e.g. "Abdurrahmaan_As-Sudais_192kbps"
+  style?: 'مرتل' | 'مجود' | 'معلم' | 'تلاوة نادرة';
+  everyAyahFolder?: string; // e.g. "Abdurrahmaan_As-Sudais_192kbps"
   mp3quranServer?: string; // e.g. "https://server11.mp3quran.net/sds/"
+  isFullSurahOnly?: boolean; // For classical historical masters whose recordings are complete surahs
+  fallbackEveryAyahFolder?: string;
   image?: string;
+  bio?: string;
+  origin?: string;
 }
 
 export type AudioRepeatMode = 'continuous' | 'single_ayah' | 'range' | 'surah';
@@ -171,10 +194,16 @@ export interface PrayerTimes {
   isha: string;
   qiyam?: string;
   nextPrayerName: string;
+  nextPrayerTime?: string;
   timeToNext: string;
+  secondsToNext?: number;
+  currentPrayerName?: string;
+  isPrayerTimeNow?: boolean;
   hijriFormatted: string;
   city: string;
 }
+
+export type TodayPrayerTimes = PrayerTimes;
 
 export interface PageAyah {
   number: number;
@@ -225,5 +254,67 @@ export interface KhatmahPlan {
   }[];
 }
 
-export type ActiveTab = 'quran' | 'reading' | 'khatmah' | 'reciters' | 'adhkar' | 'duas' | 'prayers' | 'tasbih';
+export type LectureCategory = 
+  | 'all'
+  | 'tafsir'
+  | 'seerah'
+  | 'fiqh'
+  | 'raqaiq'
+  | 'aqeedah'
+  | 'family'
+  | 'shorts';
 
+export interface ScholarItem {
+  id: string;
+  name: string;
+  title: string;
+  era?: string;
+  country: string;
+  image: string;
+  bio: string;
+  specialty: string;
+}
+
+export interface LectureItem {
+  id: string;
+  title: string;
+  scholarId: string;
+  scholarName: string;
+  category: LectureCategory;
+  categoryLabel: string;
+  youtubeId: string;
+  duration: string;
+  seriesTitle?: string;
+  seriesEpisode?: number;
+  description: string;
+  keyPoints?: string[];
+  viewsCount?: string;
+  featured?: boolean;
+  publishedYear?: string;
+}
+
+export type ActiveTab = 
+  | 'home'
+  | 'quran' 
+  | 'reading' 
+  | 'tasmee'
+  | 'khatmah' 
+  | 'reciters' 
+  | 'prophets'
+  | 'tajweed'
+  | 'adhkar' 
+  | 'duas' 
+  | 'prayers' 
+  | 'tasbih' 
+  | 'lectures' 
+  | 'ai_scholar' 
+  | 'hajj_umrah';
+
+export interface AIMessage {
+  id: string;
+  sender: 'user' | 'ai';
+  text: string;
+  timestamp: number;
+  sources?: string[];
+  isError?: boolean;
+}
